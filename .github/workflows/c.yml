@@ -60,4 +60,4 @@ jobs:
 #       run: make distcheck
 
     - name: Build ${{ matrix.build_type }}
-      run: ./build.sh ${{ matrix.build_type }}
+      run: export TERM=xterm bash build.sh ${{ matrix.build_type }}
