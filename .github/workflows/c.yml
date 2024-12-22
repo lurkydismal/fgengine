@@ -50,7 +50,15 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
+        create-symlink: true
         key: ${{ matrix.build_type }}
+
+    - uses: libsdl-org/setup-sdl@main
+      id: sdl
+      with:
+        install-linux-dependencies: true
+        version: 3-latest
+        version-sdl-image: 3-latest
 
 #     - name: configure
 #       run: ./configure
