@@ -2,7 +2,7 @@ SRCDIR                = .
 SUBDIRS               =
 DLLS                  =
 LIBS                  =
-EXES                  = main.exe
+EXES                  = libmain.a
 
 
 
@@ -19,34 +19,34 @@ LIBRARY_PATH          =
 LIBRARIES             = -lSDL3
 
 
-### main.exe sources and settings
+### libmain.a sources and settings
 
-main_exe_MODULE       = main.exe
-main_exe_C_SRCS       = src/main.c \
+libmain_a_MODULE       = libmain.a
+libmain_a_C_SRCS       = src/main.c \
 			src/init.c \
 			src/iterate.c \
 			src/event.c \
 			src/quit.c
-main_exe_CXX_SRCS     =
-main_exe_RC_SRCS      =
-main_exe_LDFLAGS      =
-main_exe_ARFLAGS      =
-main_exe_DLL_PATH     =
-main_exe_DLLS         =
-main_exe_LIBRARY_PATH =
-main_exe_LIBRARIES    =
+libmain_a_CXX_SRCS     =
+libmain_a_RC_SRCS      =
+libmain_a_LDFLAGS      =
+libmain_a_ARFLAGS      = rc
+libmain_a_DLL_PATH     =
+libmain_a_DLLS         =
+libmain_a_LIBRARY_PATH =
+libmain_a_LIBRARIES    =
 
-main_exe_OBJS         = $(main_exe_C_SRCS:.c=.o) \
-			$(main_exe_CXX_SRCS:.cpp=.o) \
-			$(main_exe_RC_SRCS:.rc=.res)
+libmain_a_OBJS         = $(libmain_a_C_SRCS:.c=.o) \
+			$(libmain_a_CXX_SRCS:.cpp=.o) \
+			$(libmain_a_RC_SRCS:.rc=.res)
 
 
 
 ### Global source lists
 
-C_SRCS                = $(main_exe_C_SRCS)
-CXX_SRCS              = $(main_exe_CXX_SRCS)
-RC_SRCS               = $(main_exe_RC_SRCS)
+C_SRCS                = $(libmain_a_C_SRCS)
+CXX_SRCS              = $(libmain_a_CXX_SRCS)
+RC_SRCS               = $(libmain_a_RC_SRCS)
 
 
 ### Tools
@@ -103,7 +103,7 @@ $(EXTRASUBDIRS:%=%/__clean__): dummy
 ### Target specific build rules
 DEFLIB = $(LIBRARY_PATH) $(LIBRARIES) $(DLL_PATH) $(DLL_IMPORTS:%=-l%)
 
-$(main_exe_MODULE): $(main_exe_OBJS)
-	$(CC) $(main_exe_LDFLAGS) -o $@ $(main_exe_OBJS) $(main_exe_LIBRARY_PATH) $(main_exe_DLL_PATH) $(DEFLIB) $(main_exe_DLLS:%=-l%) $(main_exe_LIBRARIES:%=-l%)
+$(libmain_a_MODULE): $(libmain_a_OBJS)
+	$(AR) $(libmain_a_ARFLAGS) $@ $(libmain_a_OBJS)
 
 
