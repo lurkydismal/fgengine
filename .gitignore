@@ -7,6 +7,8 @@
 # Binary
 **/*.o
 **/*.exe
+**/*.bmp
+**/*.a
 **/out
 
 # In-progress
