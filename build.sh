@@ -22,8 +22,12 @@ for partToBuild in "${partsToBuild[@]}"; do
 
 done
 
-clear
+if [ $? -eq 0 ]; then
+    printf -v partsToBuildAsString "$BUILD_DIRECTORY/lib%s.a " "${partsToBuild[@]}"
 
-$LINKER $LINK_FLAGS $BUILD_DIRECTORY/lib* -o $BUILD_DIRECTORY/$EXECUTABLE_NAME
+    echo $partsToBuildAsString
+
+    $LINKER $LINK_FLAGS $partsToBuildAsString -o $BUILD_DIRECTORY/$EXECUTABLE_NAME
+fi
 
 }
