@@ -12,6 +12,10 @@ for partToBuild in "${partsToBuild[@]}"; do
 
     source "$partToBuild/config.sh" && './build_general.sh' "$partToBuild"
 
+    if [ $? -ne 0 ]; then
+        break
+    fi
+
 done
 
 }
