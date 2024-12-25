@@ -16,7 +16,7 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
     const char* l_basePath = SDL_GetBasePath();
     char* l_path = duplicateString( _path );
 
-    concatBeforeAndAfterString( &l_path, l_basePath, "." );
+    concatBeforeAndAfterString( &l_path, l_basePath, "/." );
 
     char** l_files = SDL_GlobDirectory(
         l_path, _pattern, SDL_GLOB_CASEINSENSITIVE, &l_fileCount );
