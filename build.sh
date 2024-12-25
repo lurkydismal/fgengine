@@ -2,7 +2,7 @@
 export SCRIPT_DIRECTORY=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 export BUILD_DIRECTORY_NAME='out'
 export BUILD_DIRECTORY="$SCRIPT_DIRECTORY/$BUILD_DIRECTORY_NAME"
-export LINK_FLAGS="-lSDL3 -s -O1 -static-libgcc"
+export LINK_FLAGS="-lSDL3 -s -O1"
 export LINKER="ccache gcc"
 export EXECUTABLE_NAME="main.out"
 
