@@ -8,14 +8,14 @@
 #include "_useCallback.h"
 #endif
 
-#define arrayLengthPointer( _array ) ( ( Uint32* )( &( _array[ 0 ] ) ) )
+#define arrayLengthPointer( _array ) ( ( size_t* )( &( _array[ 0 ] ) ) )
 
-Uint32 lengthOfNumber( Uint32 _number ) {
+size_t lengthOfNumber( size_t _number ) {
     if ( _number == 0 ) {
         return ( 1 );
     }
 
-    Uint32 l_length = 0;
+    size_t l_length = 0;
 
     do {
         l_length++;
@@ -359,8 +359,8 @@ Sint64 power( Sint64 _base, Uint8 _exponent ) {
     }
 }
 
-char* convertNumberToString( Uint32 _number ) {
-    const Uint32 l_lengthOfNumber = lengthOfNumber( _number );
+char* convertNumberToString( size_t _number ) {
+    const size_t l_lengthOfNumber = lengthOfNumber( _number );
     char* l_buffer = ( char* )SDL_malloc( l_lengthOfNumber + 1 );
 
 #pragma omp simd
@@ -379,7 +379,7 @@ char* convertNumberToString( Uint32 _number ) {
 }
 
 char* duplicateString( const char* _string ) {
-    const Uint64 l_stringLength = SDL_strlen( _string );
+    const size_t l_stringLength = SDL_strlen( _string );
 
     char* l_duplicatedString =
         ( char* )SDL_malloc( ( l_stringLength + 1 ) * sizeof( char ) );
@@ -392,9 +392,9 @@ char* duplicateString( const char* _string ) {
 Sint32 findSymbolInString( const char* _string, const char _symbol ) {
     Sint32 l_returnValue = -1;
 
-    const Uint32 l_stringLength = SDL_strlen( _string );
+    const size_t l_stringLength = SDL_strlen( _string );
 
-    for ( Uint32 _index = 0; _index < l_stringLength; _index++ ) {
+    for ( size_t _index = 0; _index < l_stringLength; _index++ ) {
         const char l_symbol = _string[ _index ];
 
         if ( l_symbol == _symbol ) {
@@ -410,9 +410,9 @@ Sint32 findSymbolInString( const char* _string, const char _symbol ) {
 Sint32 findLastSymbolInString( const char* _string, const char _symbol ) {
     Sint32 l_returnValue = -1;
 
-    const Uint32 l_stringLength = SDL_strlen( _string );
+    const size_t l_stringLength = SDL_strlen( _string );
 
-    for ( Uint32 _index = 0; _index < l_stringLength; _index++ ) {
+    for ( size_t _index = 0; _index < l_stringLength; _index++ ) {
         const char l_symbol = _string[ _index ];
 
         if ( l_symbol == _symbol ) {
@@ -423,13 +423,13 @@ Sint32 findLastSymbolInString( const char* _string, const char _symbol ) {
     return ( l_returnValue );
 }
 
-Uint32 concatBeforeAndAfterString( char** _string,
+size_t concatBeforeAndAfterString( char** _string,
                                    const char* _beforeString,
                                    const char* _afterString ) {
-    const Uint32 l_stringLength = SDL_strlen( *_string );
-    const Uint32 l_beforeStringLength = SDL_strlen( _beforeString );
-    const Uint32 l_afterStringLegnth = SDL_strlen( _afterString );
-    const Uint32 l_totalLength =
+    const size_t l_stringLength = SDL_strlen( *_string );
+    const size_t l_beforeStringLength = SDL_strlen( _beforeString );
+    const size_t l_afterStringLegnth = SDL_strlen( _afterString );
+    const size_t l_totalLength =
         ( l_beforeStringLength + l_stringLength + l_afterStringLegnth );
 
     char* l_buffer = ( char* )SDL_malloc( l_stringLength * sizeof( char ) );
@@ -452,10 +452,10 @@ Uint32 concatBeforeAndAfterString( char** _string,
 }
 
 char* sanitizeString( const char* _string ) {
-    const Uint32 l_stringLength = SDL_strlen( _string );
+    const size_t l_stringLength = SDL_strlen( _string );
     char* l_buffer =
         ( char* )SDL_malloc( ( l_stringLength + 1 ) * sizeof( char ) );
-    Uint32 l_bufferLength = 0;
+    size_t l_bufferLength = 0;
 
     for ( const char* _symbol = _string; _symbol < ( _string + l_stringLength );
           _symbol++ ) {
@@ -495,28 +495,28 @@ char** splitStringIntoArray( const char* _string, const char* _delimiter ) {
     return ( l_returnValue );
 }
 
-inline void** createArray( const Uint32 _elementSize ) {
+inline void** createArray( const size_t _elementSize ) {
     void** l_array = ( void** )SDL_malloc( 1 * _elementSize );
 
-    *arrayLengthPointer( l_array ) = ( Uint32 )( char )( 1 );
+    *arrayLengthPointer( l_array ) = ( size_t )( char )( 1 );
 
     return ( l_array );
 }
 
-void preallocateArray( void*** _array, const Uint32 _length ) {
-    const Uint32 l_currentArrayLength = arrayLength( *_array );
+void preallocateArray( void*** _array, const size_t _length ) {
+    const size_t l_currentArrayLength = arrayLength( *_array );
 
     *_array = ( void** )SDL_realloc( *_array,
                                      ( ( l_currentArrayLength + _length + 1 ) *
                                        sizeof( ( *_array )[ 0 ] ) ) );
 
     *arrayLengthPointer( *_array ) =
-        ( Uint32 )( char )( l_currentArrayLength + _length + 1 );
+        ( size_t )( char )( l_currentArrayLength + _length + 1 );
 }
 
-Uint32 insertIntoArray( void*** _array, void* _value ) {
-    const Uint32 l_arrayLength = arrayLength( *_array );
-    const Uint32 l_index = ( 1 + l_arrayLength );
+size_t insertIntoArray( void*** _array, void* _value ) {
+    const size_t l_arrayLength = arrayLength( *_array );
+    const size_t l_index = ( 1 + l_arrayLength );
 
     *_array = ( void** )SDL_realloc(
         *_array, ( l_index + 1 ) * sizeof( ( *_array )[ 0 ] ) );
@@ -529,17 +529,17 @@ Uint32 insertIntoArray( void*** _array, void* _value ) {
 }
 
 inline void insertIntoArrayByIndex( void*** _array,
-                                    const Uint32 _index,
+                                    const size_t _index,
                                     void* _value ) {
     ( *_array )[ _index ] = _value;
 }
 
 Sint32 findStringInArray( const char** _array,
-                          const Uint32 _arrayLength,
+                          const size_t _arrayLength,
                           const char* _value ) {
     Sint32 l_index = -1;
 
-    for ( Uint32 _index = 0; _index < _arrayLength; _index++ ) {
+    for ( size_t _index = 0; _index < _arrayLength; _index++ ) {
         if ( SDL_strcmp( _array[ _index ], _value ) == 0 ) {
             l_index = _index;
 
@@ -550,12 +550,12 @@ Sint32 findStringInArray( const char** _array,
     return ( l_index );
 }
 
-Sint32 findInArray( const Uint32* _array,
-                    const Uint32 _arrayLength,
-                    const Uint32 _value ) {
+Sint32 findInArray( const size_t* _array,
+                    const size_t _arrayLength,
+                    const size_t _value ) {
     Sint32 l_index = -1;
 
-    for ( Uint32 _index = 0; _index < _arrayLength; _index++ ) {
+    for ( size_t _index = 0; _index < _arrayLength; _index++ ) {
         if ( _array[ _index ] == _value ) {
             l_index = _index;
 
@@ -567,14 +567,14 @@ Sint32 findInArray( const Uint32* _array,
 }
 
 inline bool containsString( const char** _array,
-                            const Uint32 _arrayLength,
+                            const size_t _arrayLength,
                             const char* _value ) {
     return ( findStringInArray( _array, _arrayLength, _value ) >= 0 );
 }
 
-inline bool contains( const Uint32* _array,
-                      const Uint32 _arrayLength,
-                      const Uint32 _value ) {
+inline bool contains( const size_t* _array,
+                      const size_t _arrayLength,
+                      const size_t _value ) {
     return ( findInArray( _array, _arrayLength, _value ) >= 0 );
 }
 

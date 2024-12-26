@@ -8,8 +8,7 @@
         ( _string )[ _to ] = '\0';  \
     } while ( false );
 
-// TODO: Fix arrayLastElementPointer pointing outside of array
-#define arrayLength( _array ) ( ( Uint64 )( _array[ 0 ] ) - 1 )
+#define arrayLength( _array ) ( ( size_t )( _array[ 0 ] ) - 1 )
 #define arrayFirstElementPointer( _array ) ( _array + 1 )
 #define arrayLastElementPointer( _array ) \
     ( ( arrayFirstElementPointer( _array ) - 1 ) + arrayLength( _array ) )
@@ -38,12 +37,10 @@
           ( _array + ( sizeof( _array ) / sizeof( _array[ 0 ] ) ) ); \
           _element++ )
 
-// TODO: Fix FOR_ARRAY getting out of range
 #define FOR_ARRAY( _type, _array )                             \
     for ( _type _element = arrayFirstElementPointer( _array ); \
           _element != ( arrayLastElementPointer( _array ) + 1 ); _element++ )
 
-// TODO: Fix FREE_ARRAY getting out of range
 #define FREE_ARRAY( _type, _array, _elementToFree ) \
     FOR_ARRAY( _type, _array ) {                    \
         /*                                          \
@@ -56,35 +53,35 @@
     }                                               \
     SDL_free( _array )
 
-Uint32 lengthOfNumber( Uint32 _number );
+size_t lengthOfNumber( size_t _number );
 Sint64 power( Sint64 _base, Uint8 _exponent );
-char* convertNumberToString( Uint32 _number );
+char* convertNumberToString( size_t _number );
 char* duplicateString( const char* _string );
 Sint32 findSymbolInString( const char* _string, const char _symbol );
 Sint32 findLastSymbolInString( const char* _string, const char _symbol );
-Uint32 concatBeforeAndAfterString( char** _string,
+size_t concatBeforeAndAfterString( char** _string,
                                    const char* _beforeString,
                                    const char* _afterString );
 char* sanitizeString( const char* _string );
 char** splitStringIntoArray( const char* _string, const char* _delimiter );
-void** createArray( const Uint32 _elementSize );
-void preallocateArray( void*** _array, const Uint32 _length );
-Uint32 insertIntoArray( void*** _array, void* _value );
+void** createArray( const size_t _elementSize );
+void preallocateArray( void*** _array, const size_t _length );
+size_t insertIntoArray( void*** _array, void* _value );
 void insertIntoArrayByIndex( void*** _array,
-                             const Uint32 _index,
+                             const size_t _index,
                              void* _value );
 Sint32 findStringInArray( const char** _array,
-                          const Uint32 _arrayLength,
+                          const size_t _arrayLength,
                           const char* _value );
-Sint32 findInArray( const Uint32* _array,
-                    const Uint32 _arrayLength,
-                    const Uint32 _value );
+Sint32 findInArray( const size_t* _array,
+                    const size_t _arrayLength,
+                    const size_t _value );
 bool containsString( const char** _array,
-                     const Uint32 _arrayLength,
+                     const size_t _arrayLength,
                      const char* _value );
-bool contains( const Uint32* _array,
-               const Uint32 _arrayLength,
-               const Uint32 _value );
+bool contains( const size_t* _array,
+               const size_t _arrayLength,
+               const size_t _value );
 
 #if 0
 void freeSettingsContent( char*** _content );
