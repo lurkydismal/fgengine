@@ -8,11 +8,13 @@
 state_t state_t$create( SDL_Renderer* const* _renderer,
                         const char* _path,
                         const char* _name,
-                        bool _isActionable  ) {
+                        bool _isActionable,
+                        bool _isLooping ) {
     state_t l_returnValue = DEFAULT_STATE;
 
     l_returnValue.renderer = _renderer;
     l_returnValue.isActionable = _isActionable;
+    l_returnValue.isLooping = _isLooping;
 
     // Load animation
     {
@@ -20,7 +22,8 @@ state_t state_t$create( SDL_Renderer* const* _renderer,
 
         concatBeforeAndAfterString( &l_pattern, _name, "bmp" );
 
-        l_returnValue.animation = animation_t$load( _renderer, _path, l_pattern );
+        l_returnValue.animation =
+            animation_t$load( _renderer, _path, l_pattern );
 
         SDL_free( l_pattern );
     }
@@ -30,4 +33,8 @@ state_t state_t$create( SDL_Renderer* const* _renderer,
 
 void state_t$destroy( state_t* _state ) {
     animation_t$unload( &( _state->animation ) );
+}
+
+void state_t$step( state_t* _state ) {
+    animation_t$step( &( _state->animation ), _state->isLooping );
 }

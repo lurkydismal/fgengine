@@ -11,7 +11,7 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
                               const char* _pattern ) {
     animation_t l_returnValue = DEFAULT_ANIMATION;
 
-    Uint32 l_fileCount = 0;
+    int l_fileCount = 0;
 
     const char* l_basePath = SDL_GetBasePath();
     char* l_path = duplicateString( _path );
@@ -22,19 +22,19 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
         l_path, _pattern, SDL_GLOB_CASEINSENSITIVE, &l_fileCount );
 
     {
-        l_returnValue.states =
+        l_returnValue.keyFrames =
             ( SDL_Texture** )createArray( sizeof( SDL_Texture* ) );
         l_returnValue.frames = ( Uint16** )createArray( sizeof( Uint16* ) );
 
         char* const* l_filesEnd = ( l_files + l_fileCount );
 
-        preallocateArray( ( void*** )( &( l_returnValue.states ) ),
+        preallocateArray( ( void*** )( &( l_returnValue.keyFrames ) ),
                           l_fileCount );
 
         for ( char** l_file = l_files; l_file != l_filesEnd; l_file++ ) {
             SDL_Log( "Loading file: \"%s\" as BMP\n", *l_file );
 
-            const Uint32 l_indexInTextureArray = ( l_filesEnd - l_file );
+            const size_t l_indexInTextureArray = ( l_filesEnd - l_file );
 
             SDL_Surface* l_fileSufrace = SDL_LoadBMP( *l_file );
 
@@ -43,7 +43,7 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
 
             SDL_DestroySurface( l_fileSufrace );
 
-            insertIntoArrayByIndex( ( void*** )( &( l_returnValue.states ) ),
+            insertIntoArrayByIndex( ( void*** )( &( l_returnValue.keyFrames ) ),
                                     l_indexInTextureArray, l_fileTexture );
 
             // Trim filename and extension
@@ -53,9 +53,9 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
             char** l_indexStartAndEndAsString =
                 splitStringIntoArray( *l_file, "-" );
 
-            const Uint32 l_indexStart =
+            const size_t l_indexStart =
                 SDL_atoi( l_indexStartAndEndAsString[ 1 ] );
-            const Uint32 l_indexEnd =
+            const size_t l_indexEnd =
                 SDL_atoi( l_indexStartAndEndAsString[ 2 ] );
 
             // Free 2 elements and l_indexStartAndEndAsString
@@ -71,10 +71,10 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
             preallocateArray( ( void*** )( &( l_returnValue.frames ) ),
                               ( l_indexEnd - l_indexStart ) );
 
-            for ( Uint32 _index = l_indexStart; _index < l_indexEnd;
+            for ( size_t _index = l_indexStart; _index < l_indexEnd;
                   _index++ ) {
-                Uint32* l_indexInTextureArrayDuplicate =
-                    ( Uint32* )SDL_malloc( sizeof( Uint32 ) );
+                size_t* l_indexInTextureArrayDuplicate =
+                    ( size_t* )SDL_malloc( sizeof( size_t ) );
                 *l_indexInTextureArrayDuplicate = l_indexInTextureArray;
 
                 insertIntoArrayByIndex(
@@ -93,3 +93,16 @@ EXIT:
 }
 
 void animation_t$unload( animation_t* _animation ) {}
+
+void animation_t$step( animation_t* _animation, bool _canLoop ) {
+    if ( arrayLength( _animation->frames ) > 1 ) {
+        if ( _animation->currentFrame != arrayLength( _animation->frames ) ) {
+            _animation->currentFrame++;
+
+        } else {
+            if ( _canLoop ) {
+                _animation->currentFrame = 1;
+            }
+        }
+    }
+}

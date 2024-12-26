@@ -2,6 +2,24 @@
 
 #include <SDL3/SDL_stdinc.h>
 
+#if !defined( NO_TYPEDEF_SSIZE_T )
+
+#if __WORDSIZE == 32
+
+typedef int ssize_t;
+
+#elif __WORDSIZE == 64
+
+typedef long int ssize_t;
+
+#else
+
+#error
+
+#endif
+
+#endif
+
 #define trim( _string, _from, _to ) \
     do {                            \
         ( _string ) += _from;       \
@@ -57,8 +75,8 @@ size_t lengthOfNumber( size_t _number );
 Sint64 power( Sint64 _base, Uint8 _exponent );
 char* convertNumberToString( size_t _number );
 char* duplicateString( const char* _string );
-Sint32 findSymbolInString( const char* _string, const char _symbol );
-Sint32 findLastSymbolInString( const char* _string, const char _symbol );
+ssize_t findSymbolInString( const char* _string, const char _symbol );
+ssize_t findLastSymbolInString( const char* _string, const char _symbol );
 size_t concatBeforeAndAfterString( char** _string,
                                    const char* _beforeString,
                                    const char* _afterString );
@@ -70,12 +88,12 @@ size_t insertIntoArray( void*** _array, void* _value );
 void insertIntoArrayByIndex( void*** _array,
                              const size_t _index,
                              void* _value );
-Sint32 findStringInArray( const char** _array,
-                          const size_t _arrayLength,
-                          const char* _value );
-Sint32 findInArray( const size_t* _array,
-                    const size_t _arrayLength,
-                    const size_t _value );
+ssize_t findStringInArray( const char** _array,
+                           const size_t _arrayLength,
+                           const char* _value );
+ssize_t findInArray( const size_t* _array,
+                     const size_t _arrayLength,
+                     const size_t _value );
 bool containsString( const char** _array,
                      const size_t _arrayLength,
                      const char* _value );
@@ -85,8 +103,8 @@ bool contains( const size_t* _array,
 
 #if 0
 void freeSettingsContent( char*** _content );
-Sint32 findKeyInSettings( char*** _settings, const char* _key );
-Sint32 findValueInSettings( char*** _settings, const char* _value );
+ssize_t findKeyInSettings( char*** _settings, const char* _key );
+ssize_t findValueInSettings( char*** _settings, const char* _value );
 char*** getLabelFromSettingsOrDefault( const char* _label,
                                        const char* _default );
 char* getKeyFromSettingsOrDefault( const char* _label,

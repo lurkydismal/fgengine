@@ -364,7 +364,7 @@ char* convertNumberToString( size_t _number ) {
     char* l_buffer = ( char* )SDL_malloc( l_lengthOfNumber + 1 );
 
 #pragma omp simd
-    for ( Sint32 _characterIndex = ( l_lengthOfNumber - 1 );
+    for ( ssize_t _characterIndex = ( l_lengthOfNumber - 1 );
           _characterIndex >= 0; _characterIndex-- ) {
         l_buffer[ _characterIndex ] =
             ( char )( ( ( _number / ( power( 10, ( l_lengthOfNumber -
@@ -389,8 +389,8 @@ char* duplicateString( const char* _string ) {
     return ( l_duplicatedString );
 }
 
-Sint32 findSymbolInString( const char* _string, const char _symbol ) {
-    Sint32 l_returnValue = -1;
+ssize_t findSymbolInString( const char* _string, const char _symbol ) {
+    ssize_t l_returnValue = -1;
 
     const size_t l_stringLength = SDL_strlen( _string );
 
@@ -407,8 +407,8 @@ Sint32 findSymbolInString( const char* _string, const char _symbol ) {
     return ( l_returnValue );
 }
 
-Sint32 findLastSymbolInString( const char* _string, const char _symbol ) {
-    Sint32 l_returnValue = -1;
+ssize_t findLastSymbolInString( const char* _string, const char _symbol ) {
+    ssize_t l_returnValue = -1;
 
     const size_t l_stringLength = SDL_strlen( _string );
 
@@ -534,10 +534,10 @@ inline void insertIntoArrayByIndex( void*** _array,
     ( *_array )[ _index ] = _value;
 }
 
-Sint32 findStringInArray( const char** _array,
-                          const size_t _arrayLength,
-                          const char* _value ) {
-    Sint32 l_index = -1;
+ssize_t findStringInArray( const char** _array,
+                           const size_t _arrayLength,
+                           const char* _value ) {
+    ssize_t l_index = -1;
 
     for ( size_t _index = 0; _index < _arrayLength; _index++ ) {
         if ( SDL_strcmp( _array[ _index ], _value ) == 0 ) {
@@ -550,10 +550,10 @@ Sint32 findStringInArray( const char** _array,
     return ( l_index );
 }
 
-Sint32 findInArray( const size_t* _array,
-                    const size_t _arrayLength,
-                    const size_t _value ) {
-    Sint32 l_index = -1;
+ssize_t findInArray( const size_t* _array,
+                     const size_t _arrayLength,
+                     const size_t _value ) {
+    ssize_t l_index = -1;
 
     for ( size_t _index = 0; _index < _arrayLength; _index++ ) {
         if ( _array[ _index ] == _value ) {
@@ -594,10 +594,10 @@ void freeSettingsContent( char*** _content ) {
     SDL_free( _content );
 }
 
-static inline Sint32 findInSettings( char** const* _settings,
+static inline ssize_t findInSettings( char** const* _settings,
                                       const char* _string,
                                       const enum SETTINGS_ITEM_TYPE _type ) {
-    Sint32 l_index = -1;
+    ssize_t l_index = -1;
 
     FOR_ARRAY( char** const*, _settings ) {
         const char* l_string = ( *_element )[ _type ];
@@ -612,11 +612,11 @@ static inline Sint32 findInSettings( char** const* _settings,
     return ( l_index );
 }
 
-inline Sint32 findKeyInSettings( char*** _settings, const char* _key ) {
+inline ssize_t findKeyInSettings( char*** _settings, const char* _key ) {
     return ( findInSettings( _settings, _key, KEY ) );
 }
 
-inline Sint32 findValueInSettings( char*** _settings, const char* _value ) {
+inline ssize_t findValueInSettings( char*** _settings, const char* _value ) {
     return ( findInSettings( _settings, _value, VALUE ) );
 }
 
@@ -647,7 +647,7 @@ char* getKeyFromSettingsOrDefault( const char* _label,
 
     if ( _useCallback( "core$getSettingsContentByLabel", &l_settings,
                        _label ) == 0 ) {
-        const Sint32 l_settingIndex = findKeyInSettings( l_settings, _key );
+        const ssize_t l_settingIndex = findKeyInSettings( l_settings, _key );
 
         if ( l_settingIndex >= 0 ) {
             l_returnValue = duplicateString( l_settings[ l_settingIndex ][ 1 ] );
