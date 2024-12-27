@@ -8,8 +8,8 @@
 
 typedef struct {
     SDL_Texture** keyFrames;
-    Uint16** frames;
-    Uint16 currentFrame;
+    size_t* frames;
+    size_t currentFrame;
 } animation_t;
 
 animation_t animation_t$load( SDL_Renderer* const* _renderer,

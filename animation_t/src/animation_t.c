@@ -24,7 +24,7 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
     {
         l_returnValue.keyFrames =
             ( SDL_Texture** )createArray( sizeof( SDL_Texture* ) );
-        l_returnValue.frames = ( Uint16** )createArray( sizeof( Uint16* ) );
+        l_returnValue.frames = ( size_t* )createArray( sizeof( size_t ) );
 
         char* const* l_filesEnd = ( l_files + l_fileCount );
 
