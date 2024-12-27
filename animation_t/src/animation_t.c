@@ -68,18 +68,15 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
 
             SDL_Log( "Frames from %d to %d\n", l_indexStart, l_indexEnd );
 
-            preallocateArray( ( void*** )( &( l_returnValue.frames ) ),
-                              ( l_indexEnd - l_indexStart ) );
+            if ( l_indexEnd > arrayLength( l_returnValue.frames ) ) {
+                preallocateArray(
+                    ( void*** )( &( l_returnValue.frames ) ),
+                    ( l_indexEnd - arrayLength( l_returnValue.frames ) - 1 ) );
+            }
 
             for ( size_t _index = l_indexStart; _index < l_indexEnd;
                   _index++ ) {
-                size_t* l_indexInTextureArrayDuplicate =
-                    ( size_t* )SDL_malloc( sizeof( size_t ) );
-                *l_indexInTextureArrayDuplicate = l_indexInTextureArray;
-
-                insertIntoArrayByIndex(
-                    ( void*** )( &( l_returnValue.frames ) ), _index,
-                    l_indexInTextureArrayDuplicate );
+                l_returnValue.frames[ _index ] = l_indexInTextureArray;
             }
         }
     }
