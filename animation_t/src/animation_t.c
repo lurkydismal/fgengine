@@ -6,7 +6,7 @@
 
 #include "stdfunc.h"
 
-animation_t animation_t$load( SDL_Renderer* const* _renderer,
+animation_t animation_t$load( SDL_Renderer* _renderer,
                               const char* _path,
                               const char* _pattern ) {
     animation_t l_returnValue = DEFAULT_ANIMATION;
@@ -56,7 +56,7 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
             }
 
             SDL_Texture* l_fileTexture =
-                SDL_CreateTextureFromSurface( *_renderer, l_fileSufrace );
+                SDL_CreateTextureFromSurface( _renderer, l_fileSufrace );
 
             SDL_DestroySurface( l_fileSufrace );
 
@@ -119,4 +119,13 @@ void animation_t$step( animation_t* _animation, bool _canLoop ) {
             }
         }
     }
+}
+
+void animation_t$render( SDL_Renderer* _renderer,
+                         animation_t* _animation,
+                         SDL_FRect* _targetRectanble ) {
+    SDL_RenderTexture( _renderer,
+                       ( _animation->keyFrames[ (
+                           _animation->frames[ _animation->currentFrame ] ) ] ),
+                       NULL, _targetRectanble );
 }

@@ -12,8 +12,11 @@ typedef struct {
     size_t currentFrame;
 } animation_t;
 
-animation_t animation_t$load( SDL_Renderer* const* _renderer,
+animation_t animation_t$load( SDL_Renderer* _renderer,
                               const char* _path,
                               const char* _pattern );
 void animation_t$unload( animation_t* _animation );
 void animation_t$step( animation_t* _animation, bool _canLoop );
+void animation_t$render( SDL_Renderer* _renderer,
+                         animation_t* _animation,
+                         SDL_FRect* _targetRectanble );
