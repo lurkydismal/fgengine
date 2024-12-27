@@ -5,7 +5,7 @@
 
 #include "stdfunc.h"
 
-state_t state_t$create( SDL_Renderer* const* _renderer,
+state_t state_t$create( SDL_Renderer* _renderer,
                         const char* _path,
                         const char* _name,
                         bool _isActionable ) {
@@ -36,4 +36,8 @@ void state_t$destroy( state_t* _state ) {
 void state_t$step( state_t* _state, bool _canLoop ) {
     animation_t$step( &( _state->animation ), _canLoop );
 }
+
+void state_t$render( state_t* _state, SDL_FRect* _targetRectanble ) {
+    animation_t$render( _state->renderer, &( _state->animation ),
+                        _targetRectanble );
 }

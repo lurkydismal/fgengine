@@ -9,14 +9,15 @@
     { .animation = DEFAULT_ANIMATION, .isActionable = true, .renderer = NULL }
 
 typedef struct {
-    SDL_Renderer* const* renderer;
+    SDL_Renderer* renderer;
     animation_t animation;
     bool isActionable;
 } state_t;
 
-state_t state_t$create( SDL_Renderer* const* _renderer,
+state_t state_t$create( SDL_Renderer* _renderer,
                         const char* _path,
                         const char* _name,
                         bool _isActionable );
 void state_t$destroy( state_t* _state );
 void state_t$step( state_t* _state, bool _canLoop );
+void state_t$render( state_t* _state, SDL_FRect* _targetRectanble );
