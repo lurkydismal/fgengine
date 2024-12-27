@@ -16,10 +16,17 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
     const char* l_basePath = SDL_GetBasePath();
     char* l_path = duplicateString( _path );
 
-    concatBeforeAndAfterString( &l_path, l_basePath, "/." );
+    char** l_files;
 
-    char** l_files = SDL_GlobDirectory(
-        l_path, _pattern, SDL_GLOB_CASEINSENSITIVE, &l_fileCount );
+    {
+        const size_t l_pathLength =
+            concatBeforeAndAfterString( &l_path, l_basePath, "/." );
+
+        l_files = SDL_GlobDirectory( l_path, _pattern, SDL_GLOB_CASEINSENSITIVE,
+                                     &l_fileCount );
+
+        trim( l_path, 0, ( l_pathLength - 1 ) );
+    }
 
     {
         l_returnValue.keyFrames =
@@ -36,7 +43,17 @@ animation_t animation_t$load( SDL_Renderer* const* _renderer,
 
             const size_t l_indexInTextureArray = ( l_filesEnd - l_file );
 
-            SDL_Surface* l_fileSufrace = SDL_LoadBMP( *l_file );
+            SDL_Surface* l_fileSufrace;
+
+            {
+                char* l_filePath = duplicateString( l_path );
+
+                concatBeforeAndAfterString( &l_filePath, "", *l_file );
+
+                l_fileSufrace = SDL_LoadBMP( l_filePath );
+
+                SDL_free( l_filePath );
+            }
 
             SDL_Texture* l_fileTexture =
                 SDL_CreateTextureFromSurface( *_renderer, l_fileSufrace );
