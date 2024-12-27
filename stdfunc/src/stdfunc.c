@@ -457,18 +457,22 @@ char* sanitizeString( const char* _string ) {
         ( char* )SDL_malloc( ( l_stringLength + 1 ) * sizeof( char ) );
     size_t l_bufferLength = 0;
 
+#define COMMENT_SYMBOL ( '#' )
+
     for ( const char* _symbol = _string; _symbol < ( _string + l_stringLength );
           _symbol++ ) {
         if ( SDL_isspace( *_symbol ) ) {
             continue;
 
-        } else if ( *_symbol == '#' ) {
+        } else if ( *_symbol == COMMENT_SYMBOL ) {
             break;
         }
 
         l_buffer[ l_bufferLength ] = *_symbol;
         l_bufferLength++;
     }
+
+#undef COMMENT_SYMBOL
 
     l_buffer[ l_bufferLength ] = '\0';
     l_bufferLength++;
@@ -498,7 +502,7 @@ char** splitStringIntoArray( const char* _string, const char* _delimiter ) {
 inline void** createArray( const size_t _elementSize ) {
     void** l_array = ( void** )SDL_malloc( 1 * _elementSize );
 
-    *arrayLengthPointer( l_array ) = ( size_t )( char )( 1 );
+    *arrayLengthPointer( l_array ) = ( size_t )( 1 );
 
     return ( l_array );
 }
@@ -511,7 +515,7 @@ void preallocateArray( void*** _array, const size_t _length ) {
                                        sizeof( ( *_array )[ 0 ] ) ) );
 
     *arrayLengthPointer( *_array ) =
-        ( size_t )( char )( l_currentArrayLength + _length + 1 );
+        ( size_t )( l_currentArrayLength + _length + 1 );
 }
 
 size_t insertIntoArray( void*** _array, void* _value ) {
