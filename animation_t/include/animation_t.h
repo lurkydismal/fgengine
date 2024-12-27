@@ -4,7 +4,7 @@
 #include <SDL3/SDL_stdinc.h>
 
 #define DEFAULT_ANIMATION \
-    { .keyFrames = NULL, .frames = NULL, .currentFrame = 0 }
+    { .keyFrames = NULL, .frames = NULL, .currentFrame = 1 }
 
 typedef struct {
     SDL_Texture** keyFrames;
