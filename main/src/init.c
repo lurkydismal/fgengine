@@ -5,7 +5,6 @@
 #include <SDL3/SDL_timer.h>
 #include <SDL3/SDL_video.h>
 
-#include "animation_t.h"
 #include "applicationState_t.h"
 
 Uint32 SDLCALL FPSCountAndShow( void* _totalFrameCount,
@@ -26,9 +25,9 @@ Uint32 SDLCALL FPSCountAndShow( void* _totalFrameCount,
 }
 
 void SDLCALL iterateIntervalHintCallback( void* _iterateSleepTime,
-                const char* _hintName,
-                const char* _hintOldValue,
-                const char* _hintNewValue ) {
+                                          const char* _hintName,
+                                          const char* _hintOldValue,
+                                          const char* _hintNewValue ) {
     if ( _hintNewValue ) {
         Uint16* l_iterateSleepTime = ( Uint16* )_iterateSleepTime;
 
@@ -64,7 +63,7 @@ SDL_AppResult SDL_AppInit( void** _applicationState,
             *_applicationState = SDL_malloc( sizeof( applicationState_t ) );
 
             SDL_memcpy( *_applicationState, &l_applicationState,
-                    sizeof( applicationState_t ) );
+                        sizeof( applicationState_t ) );
         }
     }
 
@@ -77,7 +76,8 @@ SDL_AppResult SDL_AppInit( void** _applicationState,
             Uint16* l_iterateSleepTime =
                 &( l_applicationState->iterateSleepTime );
 
-            SDL_AddHintCallback( SDL_HINT_MAIN_CALLBACK_RATE, iterateIntervalHintCallback,
+            SDL_AddHintCallback( SDL_HINT_MAIN_CALLBACK_RATE,
+                                 iterateIntervalHintCallback,
                                  l_iterateSleepTime );
         }
 
