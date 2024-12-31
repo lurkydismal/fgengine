@@ -412,6 +412,7 @@ ssize_t findLastSymbolInString( const char* _string, const char _symbol ) {
 
     const size_t l_stringLength = SDL_strlen( _string );
 
+    // TODO: Start from the end and break on first match
     for ( size_t _index = 0; _index < l_stringLength; _index++ ) {
         const char l_symbol = _string[ _index ];
 
