@@ -18,6 +18,7 @@ state_t state_t$create( SDL_Renderer* _renderer,
     {
         char* l_pattern = duplicateString( "_*-*." );
 
+        // _name_*-*.bmp
         concatBeforeAndAfterString( &l_pattern, _name, "bmp" );
 
         l_returnValue.animation =
