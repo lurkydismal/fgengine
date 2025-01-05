@@ -116,7 +116,15 @@ EXIT:
     return ( l_returnValue );
 }
 
-void animation_t$unload( animation_t* _animation ) {}
+void animation_t$unload( animation_t* _animation ) {
+    FOR_ARRAY( SDL_Texture**, _animation->keyFrames ) {
+        SDL_DestroyTexture( *_element );
+    }
+
+    SDL_free( _animation->keyFrames );
+
+    SDL_free( _animation->frames );
+}
 
 void animation_t$step( animation_t* _animation, bool _canLoop ) {
     if ( arrayLength( _animation->frames ) > 1 ) {
