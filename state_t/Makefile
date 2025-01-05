@@ -14,7 +14,9 @@ RCEXTRA               =
 DEFINES               =
 INCLUDE_PATH          = -I include \
 			-I ../stdfunc/include \
-			-I ../animation_t/include
+			-I ../animation_t/include \
+			-I ../boxes_t/include \
+			-I ../color_t/include
 DLL_PATH              =
 DLL_IMPORTS           =
 LIBRARY_PATH          =
