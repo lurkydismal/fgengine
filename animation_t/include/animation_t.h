@@ -18,5 +18,5 @@ animation_t animation_t$load( SDL_Renderer* _renderer,
 void animation_t$unload( animation_t* _animation );
 void animation_t$step( animation_t* _animation, bool _canLoop );
 void animation_t$render( SDL_Renderer* _renderer,
-                         animation_t* _animation,
-                         SDL_FRect* _targetRectanble );
+                         const animation_t* _animation,
+                         const SDL_FRect* _targetRectanble );
