@@ -10,6 +10,7 @@
 **/*.bmp
 **/*.a
 **/out
+**/*vgcore*
 
 # In-progress
 Style_Guide.md
