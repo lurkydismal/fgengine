@@ -16,86 +16,96 @@ animation_t animation_t$load( SDL_Renderer* _renderer,
     const char* l_basePath = SDL_GetBasePath();
     char* l_path = duplicateString( _path );
 
-    char** l_files;
-
     {
-        const size_t l_pathLength =
-            concatBeforeAndAfterString( &l_path, l_basePath, "/." );
+        char** l_files;
 
-        l_files = SDL_GlobDirectory( l_path, _pattern, SDL_GLOB_CASEINSENSITIVE,
-                                     &l_fileCount );
+        {
+            const size_t l_pathLength =
+                concatBeforeAndAfterString( &l_path, l_basePath, "/." );
 
-        trim( l_path, 0, ( l_pathLength - 1 ) );
-    }
+            l_files = SDL_GlobDirectory(
+                l_path, _pattern, SDL_GLOB_CASEINSENSITIVE, &l_fileCount );
 
-    {
-        l_returnValue.keyFrames =
-            ( SDL_Texture** )createArray( sizeof( SDL_Texture* ) );
-        l_returnValue.frames = ( size_t* )createArray( sizeof( size_t ) );
+            trim( l_path, 0, ( l_pathLength - 2 ) );
+        }
 
-        char* const* l_filesEnd = ( l_files + l_fileCount );
+        {
+            l_returnValue.keyFrames =
+                ( SDL_Texture** )createArray( sizeof( SDL_Texture* ) );
+            l_returnValue.frames = ( size_t* )createArray( sizeof( size_t ) );
 
-        preallocateArray( ( void*** )( &( l_returnValue.keyFrames ) ),
-                          l_fileCount );
+            char* const* l_filesEnd = ( l_files + l_fileCount );
 
-        for ( char** l_file = l_files; l_file != l_filesEnd; l_file++ ) {
-            SDL_Log( "Loading file: \"%s\" as BMP\n", *l_file );
+            preallocateArray( ( void*** )( &( l_returnValue.keyFrames ) ),
+                              l_fileCount );
 
-            const size_t l_indexInTextureArray = ( l_filesEnd - l_file );
+            for ( char** l_file = l_files; l_file != l_filesEnd; l_file++ ) {
+                SDL_Log( "Loading file: \"%s\" as BMP\n", *l_file );
 
-            SDL_Surface* l_fileSufrace;
+                const size_t l_indexInTextureArray = ( l_filesEnd - l_file );
 
-            {
-                char* l_filePath = duplicateString( l_path );
+                SDL_Surface* l_fileSufrace;
 
-                concatBeforeAndAfterString( &l_filePath, "", *l_file );
+                {
+                    char* l_filePath = duplicateString( l_path );
 
-                l_fileSufrace = SDL_LoadBMP( l_filePath );
+                    concatBeforeAndAfterString( &l_filePath, "", *l_file );
 
-                SDL_free( l_filePath );
-            }
+                    l_fileSufrace = SDL_LoadBMP( l_filePath );
 
-            SDL_Texture* l_fileTexture =
-                SDL_CreateTextureFromSurface( _renderer, l_fileSufrace );
+                    SDL_free( l_filePath );
+                }
 
-            SDL_DestroySurface( l_fileSufrace );
+                SDL_Texture* l_fileTexture =
+                    SDL_CreateTextureFromSurface( _renderer, l_fileSufrace );
 
-            insertIntoArrayByIndex( ( void*** )( &( l_returnValue.keyFrames ) ),
-                                    l_indexInTextureArray, l_fileTexture );
+                SDL_DestroySurface( l_fileSufrace );
 
-            // Trim filename and extension
-            trim( *l_file, ( findLastSymbolInString( *l_file, '_' ) + 1 ),
-                  findSymbolInString( *l_file, '.' ) );
+                insertIntoArrayByIndex(
+                    ( void*** )( &( l_returnValue.keyFrames ) ),
+                    l_indexInTextureArray, l_fileTexture );
 
-            char** l_indexStartAndEndAsString =
-                splitStringIntoArray( *l_file, "-" );
+                {
+                    // Trim filename and extension
+                    trim( *l_file,
+                          ( findLastSymbolInString( *l_file, '_' ) + 1 ),
+                          findSymbolInString( *l_file, '.' ) );
 
-            const size_t l_indexStart =
-                SDL_atoi( l_indexStartAndEndAsString[ 1 ] );
-            const size_t l_indexEnd =
-                SDL_atoi( l_indexStartAndEndAsString[ 2 ] );
+                    char** l_indexStartAndEndAsString =
+                        splitStringIntoArray( *l_file, "-" );
 
-            // Free 2 elements and l_indexStartAndEndAsString
-            {
-                SDL_free( l_indexStartAndEndAsString[ 1 ] );
-                SDL_free( l_indexStartAndEndAsString[ 2 ] );
+                    const size_t l_indexStart =
+                        SDL_atoi( l_indexStartAndEndAsString[ 1 ] );
+                    const size_t l_indexEnd =
+                        SDL_atoi( l_indexStartAndEndAsString[ 2 ] );
 
-                SDL_free( l_indexStartAndEndAsString );
-            }
+                    // Free 2 elements and l_indexStartAndEndAsString
+                    {
+                        SDL_free( l_indexStartAndEndAsString[ 1 ] );
+                        SDL_free( l_indexStartAndEndAsString[ 2 ] );
 
-            SDL_Log( "Frames from %d to %d\n", l_indexStart, l_indexEnd );
+                        SDL_free( l_indexStartAndEndAsString );
+                    }
 
-            if ( l_indexEnd > arrayLength( l_returnValue.frames ) ) {
-                preallocateArray(
-                    ( void*** )( &( l_returnValue.frames ) ),
-                    ( l_indexEnd - arrayLength( l_returnValue.frames ) - 1 ) );
-            }
+                    SDL_Log( "Frames from %d to %d\n", l_indexStart,
+                             l_indexEnd );
 
-            for ( size_t _index = l_indexStart; _index < l_indexEnd;
-                  _index++ ) {
-                l_returnValue.frames[ _index ] = l_indexInTextureArray;
+                    if ( l_indexEnd > arrayLength( l_returnValue.frames ) ) {
+                        preallocateArray(
+                            ( void*** )( &( l_returnValue.frames ) ),
+                            ( l_indexEnd - arrayLength( l_returnValue.frames ) -
+                              1 ) );
+                    }
+
+                    for ( size_t _index = l_indexStart; _index < l_indexEnd;
+                          _index++ ) {
+                        l_returnValue.frames[ _index ] = l_indexInTextureArray;
+                    }
+                }
             }
         }
+
+        SDL_free( l_files );
     }
 
     SDL_Log( "Loaded %u files from directory \"%s\"\n", l_fileCount, l_path );
