@@ -191,13 +191,15 @@ void boxes_t$unload( boxes_t* _boxes ) {
 }
 
 void boxes_t$step( boxes_t* _boxes, bool _canLoop ) {
-    if ( arrayLength( _boxes->frames ) > 1 ) {
-        if ( _boxes->currentFrame != arrayLength( _boxes->frames ) ) {
-            _boxes->currentFrame++;
+    if ( _boxes->frames ) {
+        if ( arrayLength( _boxes->frames ) > 1 ) {
+            if ( _boxes->currentFrame != arrayLength( _boxes->frames ) ) {
+                _boxes->currentFrame++;
 
-        } else {
-            if ( _canLoop ) {
-                _boxes->currentFrame = 1;
+            } else {
+                if ( _canLoop ) {
+                    _boxes->currentFrame = 1;
+                }
             }
         }
     }
