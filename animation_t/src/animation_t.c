@@ -127,13 +127,16 @@ void animation_t$unload( animation_t* _animation ) {
 }
 
 void animation_t$step( animation_t* _animation, bool _canLoop ) {
-    if ( arrayLength( _animation->frames ) > 1 ) {
-        if ( _animation->currentFrame != arrayLength( _animation->frames ) ) {
-            _animation->currentFrame++;
+    if ( _animation->frames ) {
+        if ( arrayLength( _animation->frames ) > 1 ) {
+            if ( _animation->currentFrame !=
+                 arrayLength( _animation->frames ) ) {
+                _animation->currentFrame++;
 
-        } else {
-            if ( _canLoop ) {
-                _animation->currentFrame = 1;
+            } else {
+                if ( _canLoop ) {
+                    _animation->currentFrame = 1;
+                }
             }
         }
     }
