@@ -156,11 +156,11 @@ boxes_t boxes_t$load( const char* _path, const char* _pattern ) {
                             }
                         }
 
-                        FREE_ARRAY( char**, l_boxProperties, *_element );
+                        FREE_ARRAY( char**, l_boxProperties );
                     }
                 }
 
-                FREE_ARRAY( char**, l_boxesStrings, *_element );
+                FREE_ARRAY( char**, l_boxesStrings );
                 SDL_free( l_fileContent );
             }
         }
