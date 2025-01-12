@@ -19,11 +19,12 @@ typedef struct {
     bool isActionable;
 } state_t;
 
-state_t state_t$create( SDL_Renderer* _renderer,
-                        const char* _path,
-                        const char* _name,
-                        bool _isActionable );
-void state_t$destroy( state_t* _state );
+state_t state_t$load( SDL_Renderer* _renderer,
+                      const char* _path,
+                      const char* _name,
+                      bool _isActionable );
+void state_t$unload( state_t* _state );
+
 void state_t$step( state_t* _state, bool _canLoop );
 void state_t$render( const state_t* _state,
                      const SDL_FRect* _targetRectanble,

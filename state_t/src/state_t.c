@@ -5,10 +5,10 @@
 
 #include "stdfunc.h"
 
-state_t state_t$create( SDL_Renderer* _renderer,
-                        const char* _path,
-                        const char* _name,
-                        bool _isActionable ) {
+state_t state_t$load( SDL_Renderer* _renderer,
+                      const char* _path,
+                      const char* _name,
+                      bool _isActionable ) {
     state_t l_returnValue = DEFAULT_STATE;
 
     l_returnValue.renderer = _renderer;
@@ -42,7 +42,7 @@ state_t state_t$create( SDL_Renderer* _renderer,
     return ( l_returnValue );
 }
 
-void state_t$destroy( state_t* _state ) {
+void state_t$unload( state_t* _state ) {
     animation_t$unload( &( _state->animation ) );
     boxes_t$unload( &( _state->boxes ) );
 }
@@ -57,6 +57,7 @@ void state_t$render( const state_t* _state,
                      bool _doDrawBoxes ) {
     animation_t$render( _state->renderer, &( _state->animation ),
                         _targetRectanble );
+
     if ( _doDrawBoxes ) {
         boxes_t$render( _state->renderer, &( _state->boxes ), _targetRectanble,
                         true );
