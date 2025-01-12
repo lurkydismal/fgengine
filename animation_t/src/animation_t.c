@@ -18,7 +18,6 @@ animation_t animation_t$create( void ) {
 void animation_t$destroy( animation_t* _animation ) {
     SDL_free( _animation->keyFrames );
     SDL_free( _animation->frames );
-
 }
 
 animation_t animation_t$load( SDL_Renderer* _renderer,
@@ -50,67 +49,71 @@ animation_t animation_t$load( SDL_Renderer* _renderer,
             preallocateArray( ( void*** )( &( l_returnValue.keyFrames ) ),
                               l_fileCount );
 
-            for ( char** l_file = l_files; l_file != l_filesEnd; l_file++ ) {
-                SDL_Log( "Loading file: \"%s\" as BMP\n", *l_file );
+            for ( char** _file = l_files; _file != l_filesEnd; _file++ ) {
+                SDL_Log( "Loading file: \"%s\" as BMP\n", *_file );
 
-                const size_t l_indexInTextureArray = ( l_filesEnd - l_file );
-
-                SDL_Surface* l_fileSufrace;
+                const size_t l_indexInTextureArray = ( l_filesEnd - _file );
 
                 {
-                    char* l_filePath = duplicateString( l_path );
+                    SDL_Surface* l_fileSufrace;
 
-                    concatBeforeAndAfterString( &l_filePath, "", *l_file );
-
-                    l_fileSufrace = SDL_LoadBMP( l_filePath );
-
-                    SDL_free( l_filePath );
-                }
-
-                SDL_Texture* l_fileTexture =
-                    SDL_CreateTextureFromSurface( _renderer, l_fileSufrace );
-
-                SDL_DestroySurface( l_fileSufrace );
-
-                insertIntoArrayByIndex(
-                    ( void*** )( &( l_returnValue.keyFrames ) ),
-                    l_indexInTextureArray, l_fileTexture );
-
-                {
-                    // Trim filename and extension
-                    trim( *l_file,
-                          ( findLastSymbolInString( *l_file, '_' ) + 1 ),
-                          findSymbolInString( *l_file, '.' ) );
-
-                    char** l_indexStartAndEndAsString =
-                        splitStringIntoArray( *l_file, "-" );
-
-                    const size_t l_indexStart =
-                        SDL_atoi( l_indexStartAndEndAsString[ 1 ] );
-                    const size_t l_indexEnd =
-                        SDL_atoi( l_indexStartAndEndAsString[ 2 ] );
-
-                    // Free 2 elements and l_indexStartAndEndAsString
                     {
-                        SDL_free( l_indexStartAndEndAsString[ 1 ] );
-                        SDL_free( l_indexStartAndEndAsString[ 2 ] );
+                        char* l_filePath = duplicateString( l_path );
 
-                        SDL_free( l_indexStartAndEndAsString );
+                        concatBeforeAndAfterString( &l_filePath, "", *_file );
+
+                        l_fileSufrace = SDL_LoadBMP( l_filePath );
+
+                        SDL_free( l_filePath );
                     }
 
-                    SDL_Log( "Frames from %d to %d\n", l_indexStart,
-                             l_indexEnd );
+                    SDL_Texture* l_fileTexture = SDL_CreateTextureFromSurface(
+                        _renderer, l_fileSufrace );
 
-                    if ( l_indexEnd > arrayLength( l_returnValue.frames ) ) {
-                        preallocateArray(
-                            ( void*** )( &( l_returnValue.frames ) ),
-                            ( l_indexEnd - arrayLength( l_returnValue.frames ) -
-                              1 ) );
-                    }
+                    SDL_DestroySurface( l_fileSufrace );
 
-                    for ( size_t _index = l_indexStart; _index < l_indexEnd;
-                          _index++ ) {
-                        l_returnValue.frames[ _index ] = l_indexInTextureArray;
+                    insertIntoArrayByIndex(
+                        ( void*** )( &( l_returnValue.keyFrames ) ),
+                        l_indexInTextureArray, l_fileTexture );
+
+                    {
+                        // Trim filename and extension
+                        trim( *_file,
+                              ( findLastSymbolInString( *_file, '_' ) + 1 ),
+                              findSymbolInString( *_file, '.' ) );
+
+                        char** l_indexStartAndEndAsString =
+                            splitStringIntoArray( *_file, "-" );
+
+                        const size_t l_indexStart = SDL_strtoul(
+                            l_indexStartAndEndAsString[ 1 ], NULL, 10 );
+                        const size_t l_indexEnd = SDL_strtoul(
+                            l_indexStartAndEndAsString[ 2 ], NULL, 10 );
+
+                        // Free 2 elements and l_indexStartAndEndAsString
+                        {
+                            SDL_free( l_indexStartAndEndAsString[ 1 ] );
+                            SDL_free( l_indexStartAndEndAsString[ 2 ] );
+
+                            SDL_free( l_indexStartAndEndAsString );
+                        }
+
+                        SDL_Log( "Frames from %d to %d\n", l_indexStart,
+                                 l_indexEnd );
+
+                        if ( l_indexEnd >
+                             arrayLength( l_returnValue.frames ) ) {
+                            preallocateArray(
+                                ( void*** )( &( l_returnValue.frames ) ),
+                                ( l_indexEnd -
+                                  arrayLength( l_returnValue.frames ) - 1 ) );
+                        }
+
+                        for ( size_t _index = l_indexStart; _index < l_indexEnd;
+                              _index++ ) {
+                            l_returnValue.frames[ _index ] =
+                                l_indexInTextureArray;
+                        }
                     }
                 }
             }
@@ -157,9 +160,9 @@ void animation_t$step( animation_t* _animation, bool _canLoop ) {
 
 void animation_t$render( SDL_Renderer* _renderer,
                          const animation_t* _animation,
-                         const SDL_FRect* _targetRectanble ) {
+                         const SDL_FRect* _targetRectangle ) {
     SDL_RenderTexture( _renderer,
                        ( _animation->keyFrames[ (
                            _animation->frames[ _animation->currentFrame ] ) ] ),
-                       NULL, _targetRectanble );
+                       NULL, _targetRectangle );
 }
