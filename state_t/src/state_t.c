@@ -8,11 +8,13 @@
 state_t state_t$load( SDL_Renderer* _renderer,
                       const char* _path,
                       const char* _name,
-                      bool _isActionable ) {
+                      bool _isActionable,
+                      bool _canLoop ) {
     state_t l_returnValue = DEFAULT_STATE;
 
     l_returnValue.renderer = _renderer;
     l_returnValue.isActionable = _isActionable;
+    l_returnValue.canLoop = _canLoop;
 
     // Load animation
     {
@@ -47,9 +49,9 @@ void state_t$unload( state_t* _state ) {
     boxes_t$unload( &( _state->boxes ) );
 }
 
-void state_t$step( state_t* _state, bool _canLoop ) {
-    animation_t$step( &( _state->animation ), _canLoop );
-    boxes_t$step( &( _state->boxes ), _canLoop );
+void state_t$step( state_t* _state ) {
+    animation_t$step( &( _state->animation ), _state->canLoop );
+    boxes_t$step( &( _state->boxes ), _state->canLoop );
 }
 
 void state_t$render( const state_t* _state,
