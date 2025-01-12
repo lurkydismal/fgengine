@@ -186,7 +186,9 @@ EXIT:
 }
 
 void boxes_t$unload( boxes_t* _boxes ) {
-    boxes_t$destroy( _boxes );
+    if ( ( _boxes->keyFrames ) && ( _boxes->frames ) ) {
+        boxes_t$destroy( _boxes );
+    }
 }
 
 void boxes_t$step( boxes_t* _boxes, bool _canLoop ) {
