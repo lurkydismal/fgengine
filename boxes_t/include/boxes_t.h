@@ -18,8 +18,12 @@ typedef struct {
     color_t color;
 } boxes_t;
 
+boxes_t boxes_t$create( void );
+void boxes_t$destroy( boxes_t* _boxes );
+
 boxes_t boxes_t$load( const char* _path, const char* _pattern );
 void boxes_t$unload( boxes_t* _boxes );
+
 void boxes_t$step( boxes_t* _boxes, bool _canLoop );
 void boxes_t$render( SDL_Renderer* _renderer,
                      const boxes_t* _boxes,
