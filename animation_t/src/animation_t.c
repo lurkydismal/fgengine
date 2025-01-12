@@ -6,10 +6,26 @@
 
 #include "stdfunc.h"
 
+animation_t animation_t$create( void ) {
+    animation_t l_returnValue = DEFAULT_ANIMATION;
+
+    l_returnValue.keyFrames =
+        ( SDL_Texture** )createArray( sizeof( SDL_Texture* ) );
+    l_returnValue.frames = ( size_t* )createArray( sizeof( size_t ) );
+
+    return ( l_returnValue );
+}
+
+void animation_t$destroy( animation_t* _animation ) {
+    SDL_free( _animation->keyFrames );
+    SDL_free( _animation->frames );
+
+}
+
 animation_t animation_t$load( SDL_Renderer* _renderer,
                               const char* _path,
                               const char* _pattern ) {
-    animation_t l_returnValue = DEFAULT_ANIMATION;
+    animation_t l_returnValue = animation_t$create();
 
     int l_fileCount = 0;
 
@@ -30,10 +46,6 @@ animation_t animation_t$load( SDL_Renderer* _renderer,
         }
 
         {
-            l_returnValue.keyFrames =
-                ( SDL_Texture** )createArray( sizeof( SDL_Texture* ) );
-            l_returnValue.frames = ( size_t* )createArray( sizeof( size_t ) );
-
             char* const* l_filesEnd = ( l_files + l_fileCount );
 
             preallocateArray( ( void*** )( &( l_returnValue.keyFrames ) ),
@@ -121,9 +133,7 @@ void animation_t$unload( animation_t* _animation ) {
         SDL_DestroyTexture( *_element );
     }
 
-    SDL_free( _animation->keyFrames );
-
-    SDL_free( _animation->frames );
+    animation_t$destroy( _animation );
 }
 
 void animation_t$step( animation_t* _animation, bool _canLoop ) {
