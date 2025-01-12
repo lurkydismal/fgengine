@@ -128,11 +128,15 @@ EXIT:
 }
 
 void animation_t$unload( animation_t* _animation ) {
-    FOR_ARRAY( SDL_Texture**, _animation->keyFrames ) {
-        SDL_DestroyTexture( *_element );
+    if ( arrayLength( _animation->keyFrames ) ) {
+        FOR_ARRAY( SDL_Texture**, _animation->keyFrames ) {
+            SDL_DestroyTexture( *_element );
+        }
     }
 
-    animation_t$destroy( _animation );
+    if ( ( _animation->keyFrames ) && ( _animation->frames ) ) {
+        animation_t$destroy( _animation );
+    }
 }
 
 void animation_t$step( animation_t* _animation, bool _canLoop ) {
