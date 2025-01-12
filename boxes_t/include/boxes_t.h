@@ -21,6 +21,8 @@ typedef struct {
 boxes_t boxes_t$create( void );
 void boxes_t$destroy( boxes_t* _boxes );
 
+boxes_t boxes_t$load$fromString( const char* _string,
+                                 const char* _boxesColorAsString );
 boxes_t boxes_t$load( const char* _path, const char* _pattern );
 void boxes_t$unload( boxes_t* _boxes );
 
