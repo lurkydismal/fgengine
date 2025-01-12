@@ -11,6 +11,7 @@ animation_t animation_t$create( void ) {
     l_returnValue.keyFrames =
         ( SDL_Texture** )createArray( sizeof( SDL_Texture* ) );
     l_returnValue.frames = ( size_t* )createArray( sizeof( size_t ) );
+    l_returnValue.targetBoxes = boxes_t$create();
 
     return ( l_returnValue );
 }
@@ -18,6 +19,8 @@ animation_t animation_t$create( void ) {
 void animation_t$destroy( animation_t* _animation ) {
     SDL_free( _animation->keyFrames );
     SDL_free( _animation->frames );
+
+    boxes_t$destroy( &( _animation->targetBoxes ) );
 }
 
 animation_t animation_t$load( SDL_Renderer* _renderer,
@@ -53,6 +56,41 @@ animation_t animation_t$load( SDL_Renderer* _renderer,
                 SDL_Log( "Loading file: \"%s\" as BMP\n", *_file );
 
                 const size_t l_indexInTextureArray = ( l_filesEnd - _file );
+
+                {
+                    char* l_targetBoxAsStringTrimmedAllocation =
+                        duplicateString( *_file );
+                    char* l_targetBoxAsStringTrimmed =
+                        l_targetBoxAsStringTrimmedAllocation;
+
+                    const size_t l_targetBoxStartIndex =
+                        ( findSymbolInString( l_targetBoxAsStringTrimmed,
+                                              '_' ) +
+                          1 );
+
+                    l_targetBoxAsStringTrimmed += l_targetBoxStartIndex;
+
+                    l_targetBoxAsStringTrimmed[ findSymbolInString(
+                        l_targetBoxAsStringTrimmed, 'x' ) ] = ' ';
+
+                    const size_t l_targetBoxEndIndex =
+                        findSymbolInString( l_targetBoxAsStringTrimmed, '_' );
+
+                    l_targetBoxAsStringTrimmed[ l_targetBoxEndIndex ] = '\0';
+
+                    char* l_targetBoxAsString =
+                        duplicateString( l_targetBoxAsStringTrimmed );
+
+                    SDL_free( l_targetBoxAsStringTrimmedAllocation );
+
+                    concatBeforeAndAfterString( &l_targetBoxAsString, "0 0 ",
+                                                " 1-2" );
+
+                    l_returnValue.targetBoxes =
+                        boxes_t$load$fromString( l_targetBoxAsString, NULL );
+
+                    SDL_free( l_targetBoxAsString );
+                }
 
                 {
                     SDL_Surface* l_fileSufrace;
@@ -154,6 +192,8 @@ void animation_t$step( animation_t* _animation, bool _canLoop ) {
                     _animation->currentFrame = 1;
                 }
             }
+
+            boxes_t$step( &( _animation->targetBoxes ), _canLoop );
         }
     }
 }
@@ -161,8 +201,20 @@ void animation_t$step( animation_t* _animation, bool _canLoop ) {
 void animation_t$render( SDL_Renderer* _renderer,
                          const animation_t* _animation,
                          const SDL_FRect* _targetRectangle ) {
+    const boxes_t* l_targetBoxes = &( _animation->targetBoxes );
+
+    // Always a single box
+    const SDL_FRect* l_targetBox =
+        l_targetBoxes->keyFrames
+            [ l_targetBoxes->frames[ l_targetBoxes->currentFrame ][ 1 ] ];
+
+    const SDL_FRect l_targetRectangle = {
+        ( _targetRectangle->x + l_targetBox->x ),
+        ( _targetRectangle->y + l_targetBox->y ), l_targetBox->w,
+        l_targetBox->h };
+
     SDL_RenderTexture( _renderer,
                        ( _animation->keyFrames[ (
                            _animation->frames[ _animation->currentFrame ] ) ] ),
-                       NULL, _targetRectangle );
+                       NULL, &l_targetRectangle );
 }

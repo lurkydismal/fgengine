@@ -3,13 +3,19 @@
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_stdinc.h>
 
+#include "boxes_t.h"
+
 #define DEFAULT_ANIMATION \
-    { .keyFrames = NULL, .frames = NULL, .currentFrame = 1 }
+    { .keyFrames = NULL,  \
+      .frames = NULL,     \
+      .currentFrame = 1,  \
+      .targetBoxes = DEFAULT_BOXES }
 
 typedef struct {
     SDL_Texture** keyFrames;
     size_t* frames;
     size_t currentFrame;
+    boxes_t targetBoxes; // TODO: Change target to a better name
 } animation_t;
 
 animation_t animation_t$create( void );

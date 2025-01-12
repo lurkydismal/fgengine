@@ -18,7 +18,7 @@ state_t state_t$load( SDL_Renderer* _renderer,
 
     // Load animation
     {
-        char* l_pattern = duplicateString( "_*-*." );
+        char* l_pattern = duplicateString( "_*x*_*-*." );
 
         // _name_*-*.bmp
         concatBeforeAndAfterString( &l_pattern, _name, "bmp" );
@@ -55,13 +55,26 @@ void state_t$step( state_t* _state ) {
 }
 
 void state_t$render( const state_t* _state,
-                     const SDL_FRect* _targetRectanble,
+                     const SDL_FRect* _targetRectangle,
                      bool _doDrawBoxes ) {
+    const animation_t* l_animation = &( _state->animation );
+    const boxes_t* l_targetBoxes = &( l_animation->targetBoxes );
+
+    // Always a single box
+    const SDL_FRect* l_targetBox =
+        l_targetBoxes->keyFrames
+            [ l_targetBoxes->frames[ l_targetBoxes->currentFrame ][ 1 ] ];
+
+    const SDL_FRect l_targetRectangle = {
+        ( _targetRectangle->x + l_targetBox->x ),
+        ( _targetRectangle->y + l_targetBox->y ), l_targetBox->w,
+        l_targetBox->h };
+
     animation_t$render( _state->renderer, &( _state->animation ),
-                        _targetRectanble );
+                        _targetRectangle );
 
     if ( _doDrawBoxes ) {
-        boxes_t$render( _state->renderer, &( _state->boxes ), _targetRectanble,
+        boxes_t$render( _state->renderer, &( _state->boxes ), _targetRectangle,
                         true );
     }
 }
