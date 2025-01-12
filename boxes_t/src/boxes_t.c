@@ -39,7 +39,7 @@ boxes_t boxes_t$load( const char* _path, const char* _pattern ) {
                   ( findSymbolInString( l_colorString, '_' ) + 1 ),
                   findLastSymbolInString( l_colorString, '.' ) );
 
-            l_returnValue.color = color_t$getFromString( l_colorString, 16 );
+            l_returnValue.color = color_t$fromString( l_colorString, 16 );
         }
 
         // Key frames and frames

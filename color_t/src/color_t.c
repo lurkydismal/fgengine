@@ -1,8 +1,6 @@
 #include "color_t.h"
 
-#include <SDL3/SDL_log.h>
-
-color_t color_t$getFromString( const char* _string, Uint16 _base ) {
+color_t color_t$fromString( const char* _string, Uint16 _base ) {
     color_t l_returnValue = DEFAULT_COLOR;
 
     if ( _string ) {
